@@ -1,4 +1,10 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /clientes/cuentas/microservicio
 spring:
+  application:
+    name: clientes-cuentas-microservicio
   datasource:
     url: jdbc:h2:mem:clientesdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     driver-class-name: org.h2.Driver
@@ -14,6 +20,11 @@ spring:
         format_sql: true
         highlight_sql: true
         generate_statistics: false
+  sql:
+    init:
+      mode: always
+      schema-locations: classpath:schema.sql
+      data-locations: classpath:data.sql
   h2:
     console:
       enabled: true
