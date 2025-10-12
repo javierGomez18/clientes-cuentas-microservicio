@@ -1,0 +1,276 @@
+{
+	"info": {
+		"_postman_id": "3b90db2d-6a00-426f-be64-68f83adb0a10",
+		"name": "Clientes-Cuentas-MS",
+		"description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "49198020",
+		"_collection_link": "https://j-gomez-infor-8543948.postman.co/workspace/Javier-G%C3%B3mez's-Workspace~40296272-7ae0-4e23-844c-de302610b937/collection/49198020-3b90db2d-6a00-426f-be64-68f83adb0a10?action=share&source=collection_link&creator=49198020"
+	},
+	"item": [
+		{
+			"name": "GET Clientes - OK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/clientes",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"clientes"
+					]
+				},
+				"description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+			},
+			"response": []
+		},
+		{
+			"name": "GET Clientes Adultos - OK",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/clientes/mayores-de-edad",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"clientes",
+						"mayores-de-edad"
+					]
+				},
+				"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+			},
+			"response": []
+		},
+		{
+			"name": "GET Cliente By DNI - OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/clientes/70260404G",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"clientes",
+						"70260404G"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Cliente By DNI - 404 DNI Not Found",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/clientes/70260404G",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"clientes",
+						"70260404G"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Clientes Cuenta Superior a - OK",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/clientes/con-cuenta-superior-a/100000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"clientes",
+						"con-cuenta-superior-a",
+						"100000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Clientes Cuenta Superior - 204",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseURL}}/clientes/con-cuenta-superior-a/100000",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"clientes",
+						"con-cuenta-superior-a",
+						"100000"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Add Cuenta - Created",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dniCliente\": \"70260404G\",\r\n    \"tipoCuenta\": \"Corriente\",\r\n    \"total\": 50000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cuentas",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Add Cuenta - 400 Wrong tipoCuenta",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"dniCliente\": \"70260404G\",\r\n    \"tipoCuenta\": \"Corriente\",\r\n    \"total\": 50000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cuentas",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cuentas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Saldo - OK",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"total\": 3000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cuentas/8",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cuentas",
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Update Saldo - 400",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"total\": 3000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseURL}}/cuentas/8",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"cuentas",
+						"8"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

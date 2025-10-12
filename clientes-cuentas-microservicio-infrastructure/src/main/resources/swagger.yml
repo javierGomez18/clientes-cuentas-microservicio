@@ -1,0 +1,230 @@
+openapi: 3.0.3
+info:
+  title: clientes-cuentas-microservicio
+  description: Aplicacion Gestion Clientes & Cuentas Bancarias
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/{basepath}
+    variables:
+      basepath:
+        default: clientes/cuentas/microservicio
+paths:
+  /clientes:
+    get:
+      summary: Obtener todos los clientes
+      description: Consulta para recuperar todos los clientes
+      operationId: getClientes
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteDTORS'
+        '204':
+          description: 'Clientes no encontrados'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+  /clientes/mayores-de-edad:
+    get:
+      summary: Obtener los clientes mayores de edad
+      description: Consulta para recuperar todos los clientes mayores de edad
+      operationId: getClientesAdultos
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteDTORS'
+        '204':
+          description: 'Clientes no encontrados'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: 'ERROR GET Clientes Adultos: Internal Server ERROR'
+  /clientes/con-cuenta-superior-a/{cantidad}:
+    get:
+      summary: Obtener los clientes con una suma total de sus cuentas superior a la cantidad dada
+      description: Consulta para recuperar los clientes con una suma total de sus cuentas superior a la cantidad dada
+      operationId: getClientesCantidadSuperior
+      parameters:
+        - name: cantidad
+          in: path
+          required: true
+          schema:
+            type: number
+            format: float
+          description: Cantidad mínima
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ClienteDTORS'
+        '204':
+          description: 'Clientes no encontrados'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: 'ERROR GET getClientesCantidadSuperior: Internal Server ERROR'
+  /clientes/{dni}:
+    get:
+      summary: Obtener Cliente By DNI
+      description: Obtiene un Cliente en base a un DNI introducido
+      operationId: getClienteById
+      parameters:
+        - name: dni
+          in: path
+          required: true
+          schema:
+            type: string
+            pattern: "^[0-9]{8}[A-Za-z]$"
+          description: DNI español
+      responses:
+        '200':
+          description: 'Cliente encontrado'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClienteDTORS'
+        '204':
+          description: 'Cliente no encontrado'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: 'ERROR GET getClienteById: Internal Server ERROR'
+  /cuentas:
+    post:
+      summary: Dar de alta una cuenta a un cliente asociado
+      description: Dar de alta una cuenta a un cliente asociado
+      operationId: postAddCuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewCuentaDTORQ'
+      responses:
+        '201':
+          description: 'Cuenta Creada Correctamente'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: "ERROR POST postAddCuenta: Internal Server ERROR"
+
+  /cuentas/{idCuenta}:
+    put:
+      summary: Actualizar saldo cuenta
+      description: Actualiza el total de una cuenta dada
+      operationId: putUpdateTotalCuenta
+      parameters:
+        - name: idCuenta
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Identificador Cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCuentaDTORQ'
+      responses:
+        '200':
+          description: 'Cuenta actualizada correctamente'
+        '400':
+          description: 'Bad Request'
+        '500':
+          description: "ERROR PUT putUpdateTotalCuenta: Internal Server ERROR"
+
+components:
+  schemas:
+    NewCuentaDTORQ:
+      type: object
+      required:
+        - dniCliente
+        - tipoCuenta
+        - total
+      properties:
+        dniCliente:
+          type: string
+          pattern: "^[0-9]{8}[A-Za-z]$"
+          description: DNI español
+        nombre:
+          type: string
+        apellido1:
+          type: string
+        apellido2:
+          type: string
+        tipoCuenta:
+          type: string
+          enum:
+            - NORMAL
+            - JUNIOR
+            - PREMIUM
+          description: Tipo de cuenta
+        total:
+          type: number
+          format: float
+          description: Saldo inicial de la cuenta
+    UpdateCuentaDTORQ:
+      type: object
+      required:
+        - total
+      properties:
+        total:
+          type: number
+          format: float
+          description: Saldo de la cuenta
+    ClienteDTORS:
+      type: object
+      required:
+        - dniCliente
+      properties:
+        dniCliente:
+          type: string
+          pattern: "^[0-9]{8}[A-Za-z]$"
+          description: DNI español
+        nombre:
+          type: string
+        apellido1:
+          type: string
+        apellido2:
+          type: string
+        fechaNacimiento:
+          type: string
+          format: date
+          description: Fecha de nacimiento del cliente (YYYY-MM-DD)
+        cuentas:
+          type: array
+          items:
+            $ref: '#/components/schemas/CuentaDTORS'
+    CuentaDTORS:
+      type: object
+      required:
+        - id
+        - tipoCuenta
+        - total
+      properties:
+        id:
+          type: integer
+          format: int64
+        tipoCuenta:
+          type: string
+          description: Tipo de cuenta
+        total:
+          type: number
+          format: double
+          description: Saldo de la cuenta
