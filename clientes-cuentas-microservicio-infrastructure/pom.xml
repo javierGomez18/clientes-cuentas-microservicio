@@ -123,7 +123,7 @@
                             <apiPackage>org.javierGomez18.clientes.cuentas.microservicio.web.api</apiPackage>
                             <modelPackage>org.javierGomez18.clientes.cuentas.microservicio.web.dto</modelPackage>
                             <configOptions>
-                                <interfaceOnly>true</interfaceOnly> <!-- Genera solo interfaces de controllers -->
+                                <interfaceOnly>true</interfaceOnly>
                                 <useLombokAnnotations>true</useLombokAnnotations>
                                 <java11>true</java11>
                                 <useJakartaEe>true</useJakartaEe>
