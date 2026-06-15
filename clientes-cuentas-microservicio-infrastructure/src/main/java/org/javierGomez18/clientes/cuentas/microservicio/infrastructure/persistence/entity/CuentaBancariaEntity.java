@@ -1,8 +1,10 @@
-package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.DTO.Entities;
+package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Table(name = "CUENTA_BANCARIA")
@@ -21,3 +23,4 @@ public class CuentaBancariaEntity {
     @Column(name = "TOTAL", nullable = false)
     private Float total;
 }
+

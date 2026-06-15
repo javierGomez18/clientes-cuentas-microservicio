@@ -1,4 +1,4 @@
-package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.DTO.Entities;
+package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -28,3 +28,4 @@ public class ClienteEntity {
     @OneToMany(mappedBy = "cliente", orphanRemoval = true)
     private List<CuentaBancariaEntity> cuentas;
 }
+

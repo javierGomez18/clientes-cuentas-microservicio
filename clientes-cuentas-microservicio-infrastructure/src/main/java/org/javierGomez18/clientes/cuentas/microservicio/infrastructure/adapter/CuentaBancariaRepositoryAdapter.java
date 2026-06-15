@@ -1,61 +1,93 @@
 package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.adapter;
 
-import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.excepciones.ClienteCuentasNotFoundException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.ClienteNotFoundException;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Cliente;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.CuentaBancaria;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.repository.CuentaBancariaCommandRepository;
-import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.DTO.Entities.ClienteEntity;
-import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.DTO.Entities.CuentaBancariaEntity;
-import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mappers.ToClienteEntityMapper;
-import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mappers.ToCuentaBancariaEntityMapper;
-import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.repository.ClienteJpaRepository;
-import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.repository.CuentaBancariaJpaRepository;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.CuentaBancariaCommandRepository;
+import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.ClienteEntityMapper;
+import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.CuentaEntityMapper;
+import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.entity.ClienteEntity;
+import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.entity.CuentaBancariaEntity;
+import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.repository.ClienteJpaRepository;
+import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.repository.CuentaBancariaJpaRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Adaptador: Implementa CuentaBancariaCommandRepository (Puerto OUT)
+ * Convierte llamadas del dominio a comandos JPA (escritura)
+ * Maneja la lógica de persistencia de cuentas y clientes
+ */
 @Slf4j
 @Repository
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CuentaBancariaRepositoryAdapter implements CuentaBancariaCommandRepository {
 
     private final CuentaBancariaJpaRepository cuentaBancariaJpaRepository;
     private final ClienteJpaRepository clienteJpaRepository;
-    private final ToClienteEntityMapper toClienteEntityMapper;
-    private final ToCuentaBancariaEntityMapper toCuentaBancariaEntityMapper;
+    private final ClienteEntityMapper clienteEntityMapper;
+    private final CuentaEntityMapper cuentaEntityMapper;
 
     @Override
     @Transactional
-    public void addCuenta(Cliente c) {
+    public void addCuenta(Cliente cliente, CuentaBancaria cuenta) {
+        log.debug("Iniciando creación de cuenta para cliente: {}", cliente.getDni());
+        
+        // Validaciones
+        if (cliente == null || cliente.getDni() == null) {
+            log.error("Cliente o DNI nulo al intentar crear cuenta");
+            throw new IllegalArgumentException("Cliente y DNI no pueden ser nulos");
+        }
+        
+        if (cliente.getCuentas() == null || cliente.getCuentas().isEmpty()) {
+            log.error("Lista de cuentas vacía para cliente: {}", cliente.getDni());
+            throw new IllegalArgumentException("Cliente debe tener al menos una cuenta");
+        }
 
-        log.info("Iniciando creacion cuenta para cliente: "+ c.getDni());
-
-        ClienteEntity cliente = clienteJpaRepository.findByDni(c.getDni())
+        // Buscar o crear cliente
+        ClienteEntity clienteEntity = clienteJpaRepository.findByDni(cliente.getDni())
                 .orElseGet(() -> {
-                    log.info("No existe ningun Cliente con DNI: "+ c.getDni());
-                    log.info("Insertando nuevo Cliente con DNI: "+ c.getDni());
-                    return clienteJpaRepository.save(
-                                toClienteEntityMapper.toClienteEntity(c)
-                        );
-                    }
-                );
-        log.info("Insertando cuenta para cliente: "+ c.getDni());
-        CuentaBancariaEntity cuenta = toCuentaBancariaEntityMapper.toCuentaEntity(
-                c.getCuentas().getFirst()
-        );
-        cuenta.setCliente(cliente);
+                    log.info("Cliente no existe, creando nuevo cliente con DNI: {}", cliente.getDni());
+                    return clienteJpaRepository.save(clienteEntityMapper.toEntity(cliente));
+                });
 
-        cuentaBancariaJpaRepository.save(cuenta);
-        log.info("Cuenta creada correctamente");
+        // Crear y guardar cuenta
+        CuentaBancariaEntity cuentaEntity = cuentaEntityMapper.toEntity(cuenta);
+        cuentaEntity.setCliente(clienteEntity);
+
+        cuentaBancariaJpaRepository.save(cuentaEntity);
+        log.info("Cuenta creada exitosamente para cliente: {} - Tipo: {}", cliente.getDni(), cuenta.getTipoCuenta());
     }
 
     @Override
     @Transactional
-    public void updateCuenta(CuentaBancaria c) {
-        log.info("Actualizando saldo de la cuenta: "+ c.getId());
-        CuentaBancariaEntity cuenta = cuentaBancariaJpaRepository.findById(c.getId())
-                .orElseThrow(()->new ClienteCuentasNotFoundException(c.getId()));
-        cuenta.setTotal(c.getTotal());
+    public void updateCuenta(CuentaBancaria cuenta) {
+        log.debug("Actualizando saldo de cuenta: {}", cuenta.getId());
+        
+        // Validaciones
+        if (cuenta == null || cuenta.getId() == null) {
+            log.error("Cuenta o ID de cuenta nulo");
+            throw new IllegalArgumentException("Cuenta e ID no pueden ser nulos");
+        }
+        
+        if (cuenta.getTotal() == null || cuenta.getTotal() < 0) {
+            log.error("Saldo inválido: {}", cuenta.getTotal());
+            throw new IllegalArgumentException("Saldo no puede ser negativo");
+        }
+
+        CuentaBancariaEntity cuentaEntity = cuentaBancariaJpaRepository.findById(cuenta.getId())
+                .orElseThrow(() -> {
+                    log.warn("Cuenta no encontrada con ID: {}", cuenta.getId());
+                    return new ClienteNotFoundException(cuenta.getId());
+                });
+
+        Float saldoAnterior = cuentaEntity.getTotal();
+        cuentaEntity.setTotal(cuenta.getTotal());
+        cuentaBancariaJpaRepository.save(cuentaEntity);
+        
+        log.info("Cuenta actualizada - ID: {} - Saldo anterior: {} - Saldo nuevo: {}", 
+                 cuenta.getId(), saldoAnterior, cuenta.getTotal());
     }
 }
