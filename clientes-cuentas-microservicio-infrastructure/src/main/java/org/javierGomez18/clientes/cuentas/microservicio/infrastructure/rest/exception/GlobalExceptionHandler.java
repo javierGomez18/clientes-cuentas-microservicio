@@ -1,36 +1,73 @@
 package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.rest.exception;
 
-import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.ClienteNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cliente.ClienteConflictException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cliente.ClienteNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cliente.ClienteUnprocessableEntityException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cuenta.CuentaConflictException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cuenta.CuentaNotFoundException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cuenta.CuentaUnprocessableEntityException;
+import org.javierGomez18.clientes.cuentas.microservicio.web.dto.ProblemDetailRS;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.Map;
 
-/**
- * Manejador global de excepciones para la capa REST
- */
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ClienteNotFoundException.class)
-    public ResponseEntity<Map<String, Object>> handleClienteNotFoundException(
-            ClienteNotFoundException ex) {
+    public ProblemDetailRS handleClienteNotFoundException(
+            ClienteNotFoundException ex, HttpServletRequest request) {
         log.error("ClienteNotFoundException: {}", ex.getMessage());
-        
-        Map<String, Object> body = Map.of(
-                "timestamp", LocalDateTime.now(),
-                "status", HttpStatus.NOT_FOUND.value(),
-                "error", "NOT_FOUND",
-                "message", ex.getMessage(),
-                "tipo", ex.getTipo()
-        );
 
-        return new ResponseEntity<>(body, HttpStatus.NOT_FOUND);
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Cliente no encontrado");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(URI.create("/errors/cliente-no-encontrado"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler(ClienteConflictException.class)
+    public ProblemDetailRS handleClienteConflictException(
+            ClienteConflictException ex, HttpServletRequest request) {
+        log.error("ClienteConflictException: {}", ex.getMessage());
+
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Conflicto con cliente");
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(URI.create("/errors/cliente-cuentas-abiertas"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler(ClienteUnprocessableEntityException.class)
+    public ProblemDetailRS handleClienteUnprocessableEntityException(
+            ClienteUnprocessableEntityException ex, HttpServletRequest request) {
+        log.error("ClienteUnprocessableEntityException: {}", ex.getMessage());
+
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Cliente no procesable");
+        errorResponse.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(URI.create("/errors/cliente-no-valido"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -48,18 +85,64 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        log.error("Excepción inesperada", ex);
-        
-        Map<String, Object> body = Map.of(
-                "timestamp", LocalDateTime.now(),
-                "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "error", "INTERNAL_SERVER_ERROR",
-                "message", "Error interno del servidor"
-        );
+    @ExceptionHandler(CuentaConflictException.class)
+    public ProblemDetailRS handleCuentaConflictException(CuentaConflictException ex, HttpServletRequest request) {
+        log.error("CuentaConflictException", ex);
 
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Conflicto con cuenta");
+        errorResponse.setStatus(HttpStatus.CONFLICT.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(ex.getTipo().equals(CuentaConflictException.Tipo.SALDO_INSUFICIENTE) ?
+                URI.create("/errors/saldo-insuficiente") : URI.create("/errors/cuenta-no-cerrable"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler(CuentaNotFoundException.class)
+    public ProblemDetailRS handleCuentaNotFoundException(CuentaNotFoundException ex, HttpServletRequest request) {
+        log.error("CuentaNotFoundException", ex);
+
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Cuenta no encontrada");
+        errorResponse.setStatus(HttpStatus.NOT_FOUND.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(URI.create("/errors/cuenta-no-encontrada"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler(CuentaUnprocessableEntityException.class)
+    public ProblemDetailRS handleCuentaUnprocessableEntityException(CuentaUnprocessableEntityException ex, HttpServletRequest request) {
+        log.error("CuentaUnprocessableEntityException", ex);
+
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Cuenta no procesable");
+        errorResponse.setStatus(HttpStatus.UNPROCESSABLE_ENTITY.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(URI.create("/errors/cuenta-no-valida"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ProblemDetailRS handleGenericException(Exception ex, HttpServletRequest request) {
+        log.error("Excepción inesperada", ex);
+
+        ProblemDetailRS errorResponse = new ProblemDetailRS();
+        errorResponse.setTitle("Excepción inesperada");
+        errorResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.setTimestamp(LocalDateTime.now().atOffset(java.time.ZoneOffset.UTC));
+        errorResponse.setInstance(URI.create(request.getRequestURI()));
+        errorResponse.setType(URI.create("/errors/error-interno"));
+        errorResponse.setDetail(ex.getMessage());
+
+        return errorResponse;
     }
 }
-

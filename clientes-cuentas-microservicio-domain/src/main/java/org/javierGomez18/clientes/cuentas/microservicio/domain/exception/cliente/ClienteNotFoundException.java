@@ -1,10 +1,7 @@
-package org.javierGomez18.clientes.cuentas.microservicio.domain.exception;
+package org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cliente;
 
 import lombok.Getter;
 
-/**
- * Excepción de dominio: Cliente no encontrado
- */
 @Getter
 public class ClienteNotFoundException extends RuntimeException {
 
@@ -34,4 +31,3 @@ public class ClienteNotFoundException extends RuntimeException {
         this.tipo = Tipo.BY_TOTAL;
     }
 }
-

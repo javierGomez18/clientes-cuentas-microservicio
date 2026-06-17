@@ -36,8 +36,35 @@ paths:
           description: 'Clientes no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
           description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+
   /clientes/adultos:
     get:
       tags:
@@ -58,8 +85,34 @@ paths:
           description: 'Clientes no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET Clientes Adultos: Internal Server ERROR'
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /clientes/total/{cantidad}:
     get:
       tags:
@@ -88,8 +141,34 @@ paths:
           description: 'Clientes no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET getClientesCantidadSuperior: Internal Server ERROR'
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /clientes/{dni}:
     get:
       tags:
@@ -116,8 +195,34 @@ paths:
           description: 'Cliente no encontrado'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET getClienteById: Internal Server ERROR'
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /cuentas:
     post:
       tags:
@@ -136,9 +241,40 @@ paths:
           description: 'Cuenta Creada Correctamente'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: "ERROR POST postAddCuenta: Internal Server ERROR"
-
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /cuentas/{idCuenta}:
     put:
       tags:
@@ -165,8 +301,40 @@ paths:
           description: 'Cuenta actualizada correctamente'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: "ERROR PUT putUpdateTotalCuenta: Internal Server ERROR"
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /movimientos/{idCuenta}:
     get:
       tags:
@@ -226,8 +394,40 @@ paths:
           description: 'Movimientos no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: "ERROR GET getMovimientosByCuenta: Internal Server ERROR"
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
 components:
   schemas:
     CuentaRQ:
@@ -369,3 +569,36 @@ components:
         descripcion:
           type: string
           description: Descripción del movimiento (opcional)
+    ProblemDetailRS:
+        type: object
+        required:
+            - type
+            - title
+            - status
+            - detail
+            - instance
+            - exceptionType
+            - timestamp
+        properties:
+            type:
+              type: string
+              format: uri
+              description: URI que identifica el tipo de error
+            title:
+              type: string
+              description: Título breve del error
+            status:
+              type: integer
+              format: int32
+              description: Código de estado HTTP asociado al error
+            detail:
+              type: string
+              description: Descripción detallada del error
+            instance:
+              type: string
+              format: uri
+              description: URI que identifica la instancia específica del error
+            timestamp:
+              type: string
+              format: date-time
+              description: Marca de tiempo en la que ocurrió el error (YYYY-MM-DDTHH:mm:ss)

@@ -1,12 +1,11 @@
 package org.javierGomez18.clientes.cuentas.microservicio.application.find;
 
-import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.ClienteNotFoundException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cliente.ClienteNotFoundException;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Cliente;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.FindCuentaUseCase;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.ClientesQueryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.adapter;
 
-import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.ClienteNotFoundException;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.exception.cliente.ClienteNotFoundException;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Cliente;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.CuentaBancaria;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.CuentaBancariaCommandRepository;
@@ -39,11 +39,6 @@ public class CuentaBancariaRepositoryAdapter implements CuentaBancariaCommandRep
         if (cliente == null || cliente.getDni() == null) {
             log.error("Cliente o DNI nulo al intentar crear cuenta");
             throw new IllegalArgumentException("Cliente y DNI no pueden ser nulos");
-        }
-        
-        if (cliente.getCuentas() == null || cliente.getCuentas().isEmpty()) {
-            log.error("Lista de cuentas vacía para cliente: {}", cliente.getDni());
-            throw new IllegalArgumentException("Cliente debe tener al menos una cuenta");
         }
 
         // Buscar o crear cliente
