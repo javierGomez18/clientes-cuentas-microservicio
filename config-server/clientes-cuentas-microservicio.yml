@@ -1,28 +1,26 @@
 spring:
   application:
     name: clientes-cuentas-microservicio
+
+server:
+  servlet:
+    context-path: /api/v1/clientes-cuentas
+
 feign:
   circuitbreaker:
     enabled: true
   client:
     config:
       default:
-        connectTimeout: 2000
-        readTimeout: 5000
         loggerLevel: full
+
 resilience4j:
   circuitbreaker:
     instances:
-      clientes-cuentas-microservicio:
-        slidingWindowSize: 10
-        failureRateThreshold: 50
-        waitDurationInOpenState: 5s
+      clientes-cuentas-microservicio: {}
   timelimiter:
     instances:
-      clientes-cuentas-microservicio:
-        timeoutDuration: 2s
+      clientes-cuentas-microservicio: {}
   bulkhead:
     instances:
-      clientes-cuentas-microservicio:
-        maxConcurrentCalls: 10
-        maxWaitDuration: 0
+      clientes-cuentas-microservicio: {}
