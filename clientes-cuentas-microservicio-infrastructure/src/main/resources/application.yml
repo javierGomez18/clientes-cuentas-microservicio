@@ -8,8 +8,3 @@ spring:
       uri: http://localhost:8888
       profile: dev
       label: feature/account-movements-history
-management:
-  endpoints:
-    web:
-      exposure:
-        include: refresh
