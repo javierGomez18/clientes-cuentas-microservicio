@@ -6,13 +6,14 @@
 
     <groupId>org.javierGomez18.clientes.cuentas.microservicio</groupId>
     <artifactId>clientes-cuentas-microservicio</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
         <module>clientes-cuentas-microservicio-domain</module>
         <module>clientes-cuentas-microservicio-application</module>
         <module>clientes-cuentas-microservicio-infrastructure</module>
+        <module>clientes-cuentas-microservicio-config-server</module>
     </modules>
 
     <properties>
@@ -23,8 +24,11 @@
         <junit.jupiter.version>5.10.0</junit.jupiter.version>
         <mockito.version>5.5.0</mockito.version>
         <openapi-generator-maven-plugin.version>7.0.1</openapi-generator-maven-plugin.version>
+        <slf4j.version>2.0.13</slf4j.version>
+        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <spring-cloud-config.version>4.0.1</spring-cloud-config.version>
+        <spring-data-bom.version>2023.0.3</spring-data-bom.version>
     </properties>
-
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -34,12 +38,19 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-
             <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-                <scope>provided</scope>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.data</groupId>
+                <artifactId>spring-data-bom</artifactId>
+                <version>${spring-data-bom.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -63,10 +74,30 @@
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
-
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+
+                <configuration>
+                    <java>
+                        <googleJavaFormat/>
+                        <removeUnusedImports/>
+                    </java>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

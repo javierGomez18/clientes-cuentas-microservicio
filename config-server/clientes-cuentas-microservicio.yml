@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: clientes-cuentas-microservicio
+
+server:
+  servlet:
+    context-path: /api/v1/clientes-cuentas
+
+feign:
+  circuitbreaker:
+    enabled: true
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      clientes-cuentas-microservicio: {}
+  timelimiter:
+    instances:
+      clientes-cuentas-microservicio: {}
+  bulkhead:
+    instances:
+      clientes-cuentas-microservicio: {}

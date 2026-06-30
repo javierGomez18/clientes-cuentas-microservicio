@@ -7,13 +7,22 @@ servers:
   - url: http://localhost:8080/{basepath}
     variables:
       basepath:
-        default: clientes/cuentas/microservicio
+        default: api/v1
+tags:
+  - name: Clientes
+    description: Operaciones relacionadas con clientes
+  - name: Cuentas
+    description: Operaciones relacionadas con cuentas bancarias
+  - name: Movimientos
+    description: Operaciones relacionadas con movimientos bancarios
 paths:
   /clientes:
     get:
+      tags:
+        - Clientes
       summary: Obtener todos los clientes
       description: Consulta para recuperar todos los clientes
-      operationId: getClientes
+      operationId: findAllClientes
       responses:
         '200':
           description: Lista de clientes
@@ -22,18 +31,47 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ClienteDTORS'
+                  $ref: '#/components/schemas/ClienteRS'
         '204':
           description: 'Clientes no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
           description: 'ERROR GET Clientes: Internal Server ERROR'
-  /clientes/mayores-de-edad:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+
+  /clientes/adultos:
     get:
+      tags:
+        - Clientes
       summary: Obtener los clientes mayores de edad
       description: Consulta para recuperar todos los clientes mayores de edad
-      operationId: getClientesAdultos
+      operationId: findClientesAdultos
       responses:
         '200':
           description: Lista de clientes
@@ -42,18 +80,46 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ClienteDTORS'
+                  $ref: '#/components/schemas/ClienteRS'
         '204':
           description: 'Clientes no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET Clientes Adultos: Internal Server ERROR'
-  /clientes/con-cuenta-superior-a/{cantidad}:
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+  /clientes/total/{cantidad}:
     get:
+      tags:
+        - Clientes
       summary: Obtener los clientes con una suma total de sus cuentas superior a la cantidad dada
       description: Consulta para recuperar los clientes con una suma total de sus cuentas superior a la cantidad dada
-      operationId: getClientesCantidadSuperior
+      operationId: findClientesByTotalGreaterThan
       parameters:
         - name: cantidad
           in: path
@@ -70,18 +136,46 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ClienteDTORS'
+                  $ref: '#/components/schemas/ClienteRS'
         '204':
           description: 'Clientes no encontrados'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET getClientesCantidadSuperior: Internal Server ERROR'
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /clientes/{dni}:
     get:
+      tags:
+        - Clientes
       summary: Obtener Cliente By DNI
       description: Obtiene un Cliente en base a un DNI introducido
-      operationId: getClienteById
+      operationId: findClienteByDni
       parameters:
         - name: dni
           in: path
@@ -96,37 +190,98 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClienteDTORS'
+                $ref: '#/components/schemas/ClienteRS'
         '204':
           description: 'Cliente no encontrado'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET getClienteById: Internal Server ERROR'
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /cuentas:
     post:
+      tags:
+        - Cuentas
       summary: Dar de alta una cuenta a un cliente asociado
       description: Dar de alta una cuenta a un cliente asociado
-      operationId: postAddCuenta
+      operationId: createCuenta
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewCuentaDTORQ'
+              $ref: '#/components/schemas/CuentaRQ'
       responses:
         '201':
           description: 'Cuenta Creada Correctamente'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: "ERROR POST postAddCuenta: Internal Server ERROR"
-
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /cuentas/{idCuenta}:
     put:
+      tags:
+        - Cuentas
       summary: Actualizar saldo cuenta
       description: Actualiza el total de una cuenta dada
-      operationId: putUpdateTotalCuenta
+      operationId: updateCuenta
       parameters:
         - name: idCuenta
           in: path
@@ -140,18 +295,206 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateCuentaDTORQ'
+              $ref: '#/components/schemas/CuentaUpdateRQ'
       responses:
         '200':
           description: 'Cuenta actualizada correctamente'
         '400':
           description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: "ERROR PUT putUpdateTotalCuenta: Internal Server ERROR"
-
+          description: 'ERROR GET Clientes: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+  /cuentas/{idCuenta}/movimientos:
+    post:
+      tags:
+        - Cuentas
+      summary: Realizar un movimiento en una cuenta
+      description: Realiza un movimiento (INGRESO, RETIRADA o TRANSFERENCIA) en una cuenta dada
+      operationId: realizarMovimiento
+      parameters:
+        - name: idCuenta
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Identificador Cuenta"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovimientoRQ'
+      responses:
+        '201':
+          description: 'Movimiento realizado correctamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovimientoRS'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '500':
+          description: 'ERROR POST Movimientos: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+  /movimientos/{idCuenta}:
+    get:
+      tags:
+        - Movimientos
+      summary: Obtener movimientos de una cuenta
+      description: Consulta para recuperar los movimientos de una cuenta dada
+      operationId: findMovimientosByCuentaId
+      parameters:
+        - name: idCuenta
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Identificador Cuenta"
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 0
+          description: "Paginación - número de página (0-indexada)"
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            format: int32
+            default: 20
+          description: "Paginación - tamaño de página"
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            default: "desc"
+          description: "Paginación - ordenación"
+        - name: tipo
+          in: query
+          required: false
+          schema:
+            type: string
+            enum:
+              - INGRESO
+              - RETIRADA
+              - TRANSFERENCIA
+          description: "Filtro opcional por tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)"
+      responses:
+        '200':
+          description: Lista de movimientos de la cuenta
+          content:
+            application/json:
+              schema:
+                  $ref: '#/components/schemas/MovimientoPageRS'
+        '204':
+          description: 'Movimientos no encontrados'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '500':
+          description: 'ERROR POST Movimientos: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
 components:
   schemas:
-    NewCuentaDTORQ:
+    CuentaRQ:
       type: object
       required:
         - dniCliente
@@ -179,7 +522,7 @@ components:
           type: number
           format: float
           description: Saldo inicial de la cuenta
-    UpdateCuentaDTORQ:
+    CuentaUpdateRQ:
       type: object
       required:
         - total
@@ -188,7 +531,7 @@ components:
           type: number
           format: float
           description: Saldo de la cuenta
-    ClienteDTORS:
+    ClienteRS:
       type: object
       required:
         - dniCliente
@@ -210,8 +553,8 @@ components:
         cuentas:
           type: array
           items:
-            $ref: '#/components/schemas/CuentaDTORS'
-    CuentaDTORS:
+            $ref: '#/components/schemas/CuentaRS'
+    CuentaRS:
       type: object
       required:
         - id
@@ -228,3 +571,122 @@ components:
           type: number
           format: double
           description: Saldo de la cuenta
+    MovimientoPageRS:
+        type: object
+        required:
+            - content
+            - page
+            - size
+            - totalElements
+            - totalPages
+        properties:
+            content:
+              type: array
+              items:
+                  $ref: '#/components/schemas/MovimientoRS'
+            page:
+              type: integer
+              format: int32
+              description: Número de página actual (0-indexada)
+            size:
+              type: integer
+              format: int32
+              description: Tamaño de página solicitado
+            totalElements:
+              type: integer
+              format: int64
+              description: Número total de elementos disponibles
+            totalPages:
+              type: integer
+              format: int32
+              description: Número total de páginas disponibles
+    MovimientoRQ:
+        type: object
+        required:
+            - tipoMovimiento
+            - importe
+        properties:
+            tipoMovimiento:
+              type: string
+              enum:
+                  - INGRESO
+                  - RETIRADA
+                  - TRANSFERENCIA
+              description: Tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)
+            importe:
+              type: number
+              format: double
+              description: Cantidad del movimiento
+            idCuentaDestino:
+              type: integer
+              format: int64
+              description: "Identificador Cuenta Destino (solo requerido para TRANSFERENCIA, opcional para INGRESO y RETIRADA)"
+            descripcion:
+              type: string
+              description: Descripción del movimiento (opcional)
+    MovimientoRS:
+      type: object
+      required:
+        - id
+        - cuentaId
+        - fechaOperacion
+        - tipoMovimiento
+        - importe
+      properties:
+        id:
+          type: integer
+          format: int64
+        cuentaId:
+          type: integer
+          format: int64
+        fechaOperacion:
+          type: string
+          format: date-time
+          description: Fecha y hora del movimiento (YYYY-MM-DDTHH:mm:ss)
+        tipoMovimiento:
+          type: string
+          enum:
+            - INGRESO
+            - RETIRADA
+            - TRANSFERENCIA
+          description: Tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)
+        importe:
+          type: number
+          format: double
+          description: Cantidad del movimiento
+        descripcion:
+          type: string
+          description: Descripción del movimiento (opcional)
+    ProblemDetailRS:
+        type: object
+        required:
+            - type
+            - title
+            - status
+            - detail
+            - instance
+            - exceptionType
+            - timestamp
+        properties:
+            type:
+              type: string
+              format: uri
+              description: URI que identifica el tipo de error
+            title:
+              type: string
+              description: Título breve del error
+            status:
+              type: integer
+              format: int32
+              description: Código de estado HTTP asociado al error
+            detail:
+              type: string
+              description: Descripción detallada del error
+            instance:
+              type: string
+              format: uri
+              description: URI que identifica la instancia específica del error
+            timestamp:
+              type: string
+              format: date-time
+              description: Marca de tiempo en la que ocurrió el error (YYYY-MM-DDTHH:mm:ss)
