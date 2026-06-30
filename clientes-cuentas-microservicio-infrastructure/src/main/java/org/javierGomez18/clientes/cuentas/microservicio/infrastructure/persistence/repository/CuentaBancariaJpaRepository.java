@@ -6,9 +6,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-/**
- * Repositorio JPA: Cuenta Bancaria
- */
 @Repository
 public interface CuentaBancariaJpaRepository extends JpaRepository<CuentaBancariaEntity, Long> {
     List<CuentaBancariaEntity> findByClienteDni(String dniCliente);

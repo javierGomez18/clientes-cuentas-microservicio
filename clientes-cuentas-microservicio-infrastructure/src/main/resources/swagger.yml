@@ -335,6 +335,70 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailRS'
+  /cuentas/{idCuenta}/movimientos:
+    post:
+      tags:
+        - Cuentas
+      summary: Realizar un movimiento en una cuenta
+      description: Realiza un movimiento (INGRESO, RETIRADA o TRANSFERENCIA) en una cuenta dada
+      operationId: realizarMovimiento
+      parameters:
+        - name: idCuenta
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: "Identificador Cuenta"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MovimientoRQ'
+      responses:
+        '201':
+          description: 'Movimiento realizado correctamente'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MovimientoRS'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '500':
+          description: 'ERROR POST Movimientos: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: Error inesperado
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /movimientos/{idCuenta}:
     get:
       tags:
@@ -417,7 +481,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProblemDetailRS'
         '500':
-          description: 'ERROR GET Clientes: Internal Server ERROR'
+          description: 'ERROR POST Movimientos: Internal Server ERROR'
           content:
             application/json:
               schema:
@@ -536,6 +600,30 @@ components:
               type: integer
               format: int32
               description: Número total de páginas disponibles
+    MovimientoRQ:
+        type: object
+        required:
+            - tipoMovimiento
+            - importe
+        properties:
+            tipoMovimiento:
+              type: string
+              enum:
+                  - INGRESO
+                  - RETIRADA
+                  - TRANSFERENCIA
+              description: Tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)
+            importe:
+              type: number
+              format: double
+              description: Cantidad del movimiento
+            idCuentaDestino:
+              type: integer
+              format: int64
+              description: "Identificador Cuenta Destino (solo requerido para TRANSFERENCIA, opcional para INGRESO y RETIRADA)"
+            descripcion:
+              type: string
+              description: Descripción del movimiento (opcional)
     MovimientoRS:
       type: object
       required:

@@ -1,4 +1,4 @@
-package org.javierGomez18.clientes.cuentas.microservicio.application.movimiento;
+package org.javierGomez18.clientes.cuentas.microservicio.application.find;
 
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Movimiento;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.PageRequest;

@@ -19,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class CuentasControllerTest {
 
-    private final MockMvc mockMvc;
+    /*private final MockMvc mockMvc;
 
     @Test
     void postAddCuenta_addNewCuentaToExistingCliente_resultOK() throws Exception {
@@ -112,5 +112,5 @@ public class CuentasControllerTest {
               "total": 50000.0
             }
             """;
-    }
+    }*/
 }

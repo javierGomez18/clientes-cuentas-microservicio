@@ -14,7 +14,7 @@ public class MovimientoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    @Column(name = "CREATE_AT", nullable = false, updatable = false)
+    @Column(name = "CREATE_AT")
     LocalDate createAt;
     @Column(name = "TIPO", nullable = false)
     String tipo;
@@ -25,5 +25,10 @@ public class MovimientoEntity {
     CuentaBancariaEntity cuenta;
     @Column(name = "DESCRIPCION")
     String descripcion;
+
+    @PrePersist
+    public void prePersist() {
+        this.createAt = LocalDate.now();
+    }
 }
 

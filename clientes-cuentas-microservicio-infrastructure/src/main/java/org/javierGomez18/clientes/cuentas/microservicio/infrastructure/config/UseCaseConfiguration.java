@@ -1,16 +1,13 @@
 package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.config;
 
 import org.javierGomez18.clientes.cuentas.microservicio.application.create.CreateCuentaService;
+import org.javierGomez18.clientes.cuentas.microservicio.application.create.CreateMovimientoService;
 import org.javierGomez18.clientes.cuentas.microservicio.application.find.FindCuentaService;
-import org.javierGomez18.clientes.cuentas.microservicio.application.movimiento.FindMovimientoService;
+import org.javierGomez18.clientes.cuentas.microservicio.application.find.FindMovimientoService;
 import org.javierGomez18.clientes.cuentas.microservicio.application.update.UpdateCuentaService;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.CreateCuentaUseCase;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.FindCuentaUseCase;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.FindMovimientoUseCase;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.UpdateCuentaUseCase;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.ClientesQueryRepository;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.CuentaBancariaCommandRepository;
-import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.MovimientoQueryRepository;
+
+import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.*;
+import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -37,6 +34,11 @@ public class UseCaseConfiguration {
         return new FindMovimientoService(movimientoRepository);
     }
 
-
+    @Bean
+    public CreateMovimientoUseCase createMovimientoUseCase(CuentaBancariaCommandRepository cuentaCommandRepository,
+                                                           CuentaBancariaQueryRepository cuentaQueryRepository,
+                                                           MovimientoCommandRepository movimientoRepository) {
+        return new CreateMovimientoService(cuentaCommandRepository, cuentaQueryRepository, movimientoRepository);
+    }
 }
 
