@@ -7,6 +7,6 @@ spring:
       server:
         git:
           uri: https://github.com/javierGomez18/clientes-cuentas-microservicio
-          default-label: feature/account-movements-history
+          default-label: develop
           search-paths: config-server
           clone-on-start: true
