@@ -4,23 +4,23 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @Table(name = "CUENTA_BANCARIA")
 @Getter
 @Setter
 public class CuentaBancariaEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "DNI_CLIENTE", nullable = false)
-    private ClienteEntity cliente;
-    @Column(name = "TIPO_CUENTA", nullable = false)
-    private String tipoCuenta;
-    @Column(name = "TOTAL", nullable = false)
-    private Float total;
-}
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "DNI_CLIENTE", nullable = false)
+  private ClienteEntity cliente;
+
+  @Column(name = "TIPO_CUENTA", nullable = false)
+  private String tipoCuenta;
+
+  @Column(name = "TOTAL", nullable = false)
+  private Float total;
+}

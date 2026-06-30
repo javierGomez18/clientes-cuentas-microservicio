@@ -12,28 +12,28 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 public class MovimientosController implements MovimientosApi {
 
-    private final FindMovimientoUseCase findMovimientoUseCase;
-    private final MovimientoResponseMapper movimientoResponseMapper;
+  private final FindMovimientoUseCase findMovimientoUseCase;
+  private final MovimientoResponseMapper movimientoResponseMapper;
 
-    @Override
-    public ResponseEntity<MovimientoPageRS> findMovimientosByCuentaId(Long idCuenta, Integer page, Integer size, String sort, String tipo) {
-        log.info("GET /movimientos/{}", idCuenta);
+  @Override
+  public ResponseEntity<MovimientoPageRS> findMovimientosByCuentaId(
+      Long idCuenta, Integer page, Integer size, String sort, String tipo) {
+    log.info("GET /movimientos/{}", idCuenta);
 
-
-        PageResult<Movimiento> movimientos = findMovimientoUseCase.findByCuentaId(idCuenta, page, size, sort);
-        MovimientoPageRS response = new MovimientoPageRS();
-        response.page(movimientos.page());
-        response.size(movimientos.size());
-        response.totalElements(movimientos.totalElements());
-        response.totalPages(movimientos.totalPages());
-        response.content(movimientos.content().stream().map(movimientoResponseMapper::toResponse).toList());
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-    }
+    PageResult<Movimiento> movimientos =
+        findMovimientoUseCase.findByCuentaId(idCuenta, page, size, sort);
+    MovimientoPageRS response = new MovimientoPageRS();
+    response.page(movimientos.page());
+    response.size(movimientos.size());
+    response.totalElements(movimientos.totalElements());
+    response.totalPages(movimientos.totalPages());
+    response.content(
+        movimientos.content().stream().map(movimientoResponseMapper::toResponse).toList());
+    return ResponseEntity.status(HttpStatus.OK).body(response);
+  }
 }

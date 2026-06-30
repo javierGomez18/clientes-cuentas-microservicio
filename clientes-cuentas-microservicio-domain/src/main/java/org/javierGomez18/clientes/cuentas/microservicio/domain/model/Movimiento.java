@@ -1,9 +1,8 @@
 package org.javierGomez18.clientes.cuentas.microservicio.domain.model;
 
-import lombok.*;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import lombok.*;
 
 @Setter
 @Getter
@@ -12,21 +11,17 @@ import java.time.LocalDate;
 @Builder
 public class Movimiento {
 
-    private Long id;
+  private Long id;
 
-    @NonNull
-    private LocalDate fechaOperacion;
+  @NonNull private LocalDate fechaOperacion;
 
-    @NonNull
-    private TipoMovimiento tipo;
+  @NonNull private TipoMovimiento tipo;
 
-    @NonNull
-    private BigDecimal importe;
+  @NonNull private BigDecimal importe;
 
-    private BigDecimal saldoResultante;
+  private BigDecimal saldoResultante;
 
-    @NonNull
-    private Long cuentaId;
+  @NonNull private Long cuentaId;
 
-    private String descripcion;
+  private String descripcion;
 }

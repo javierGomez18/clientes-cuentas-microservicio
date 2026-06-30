@@ -4,14 +4,14 @@ import lombok.Getter;
 
 @Getter
 public class ClienteConflictException extends RuntimeException {
-    public enum Tipo {
-        TIENE_CUENTAS_ABIERTAS
-    }
+  public enum Tipo {
+    TIENE_CUENTAS_ABIERTAS
+  }
 
-    private final Tipo tipo;
+  private final Tipo tipo;
 
-    public ClienteConflictException(String dni) {
-        super("El cliente con id " + dni + " no puede eliminarse porque tiene cuentas abiertas.");
-        this.tipo = Tipo.TIENE_CUENTAS_ABIERTAS;
-    }
+  public ClienteConflictException(String dni) {
+    super("El cliente con id " + dni + " no puede eliminarse porque tiene cuentas abiertas.");
+    this.tipo = Tipo.TIENE_CUENTAS_ABIERTAS;
+  }
 }
