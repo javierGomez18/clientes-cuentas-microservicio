@@ -2,7 +2,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info,prometheus,refresh
+        include: health,info,prometheus,refresh,mappings
   endpoint:
     prometheus:
       enabled: true
