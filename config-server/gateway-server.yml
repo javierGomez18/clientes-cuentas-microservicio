@@ -1,0 +1,32 @@
+server:
+  port: 8081
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: clientes-cuentas-clientes
+          uri: lb://clientes-cuentas-microservicio
+          predicates:
+            - Path=/api/clientes/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /api/v1/${segment}
+        - id: clientes-cuentas-cuentas
+          uri: lb://clientes-cuentas-microservicio
+          predicates:
+            - Path=/api/cuentas/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /api/v1/${segment}
+        - id: clientes-cuentas-movimientos
+          uri: lb://clientes-cuentas-microservicio
+          predicates:
+            - Path=/api/movimientos/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /api/v1/${segment}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-server:8761/eureka
