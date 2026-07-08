@@ -13,19 +13,19 @@ spring:
           predicates:
             - Path=/api/clientes/**
           filters:
-            - RewritePath=/api/(?<segment>.*), /api/v1/${segment}
+            - RewritePath=/api/(?<segment>.*), /api/v1/clientes-cuentas/${segment}
         - id: clientes-cuentas-cuentas
           uri: lb://clientes-cuentas-microservicio
           predicates:
             - Path=/api/cuentas/**
           filters:
-            - RewritePath=/api/(?<segment>.*), /api/v1/${segment}
+            - RewritePath=/api/(?<segment>.*), /api/v1/clientes-cuentas/${segment}
         - id: clientes-cuentas-movimientos
           uri: lb://clientes-cuentas-microservicio
           predicates:
             - Path=/api/movimientos/**
           filters:
-            - RewritePath=/api/(?<segment>.*), /api/v1/${segment}
+            - RewritePath=/api/(?<segment>.*), /api/v1/clientes-cuentas/${segment}
 eureka:
   client:
     service-url:
