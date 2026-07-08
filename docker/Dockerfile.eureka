@@ -1,0 +1,9 @@
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+COPY clientes-cuentas-microservicio-eureka-server/target/clientes-cuentas-microservicio-eureka-server-3.3.1.jar app.jar
+
+EXPOSE 8761
+
+ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -193,6 +193,15 @@
                     <testFailureIgnore>false</testFailureIgnore>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>
+                        org.javierGomez18.clientes.cuentas.microservicio.infrastructure.ClientesCuentasMicroservicioApplication
+                    </mainClass>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
