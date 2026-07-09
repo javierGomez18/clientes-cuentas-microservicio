@@ -83,7 +83,7 @@ services:
       KC_PROXY: edge
 
     ports:
-      - "8081:8080"
+      - "8082:8082"
 
     depends_on:
       - keycloak-postgres
@@ -111,21 +111,23 @@ services:
   # ============================
   # API GATEWAY
   # ============================
-#  gateway:
-#    image: javier/api-gateway:latest
-#    container_name: api-gateway
-#    build:
-#      context: ./gateway
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - eureka-server
-#      - config-server
-#      - keycloak
-#    networks:
-#      - backend
+  gateway-ms:
+    container_name: gateway-server
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile.gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    ports:
+      - "8081:8081"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+    networks:
+      - backend
 
 # ============================
 # VOLUMENES
