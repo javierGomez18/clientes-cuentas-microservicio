@@ -9,3 +9,7 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+security:
+  allowed-clients:
+    - clientes-cuentas-microservicio
+    - retail-microservicio
