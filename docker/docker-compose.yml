@@ -10,11 +10,11 @@ services:
       context: ..
       dockerfile: ./docker/Dockerfile.config
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8888:8888"
     networks:
-      - backend
+      - backend-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
       interval: 5s
@@ -32,7 +32,7 @@ services:
     ports:
       - "8761:8761"
     networks:
-      - backend
+      - backend-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
       interval: 5s
@@ -59,7 +59,8 @@ services:
       config-server:
         condition: service_healthy
     networks:
-      - backend
+      - backend-net
+      - docker_platform-net
 
   # ============================
   # KEYCLOAK + POSTGRES
@@ -94,7 +95,7 @@ services:
       - keycloak_providers:/opt/keycloak/providers
 
     networks:
-      - backend
+      - backend-net
 
   keycloak-postgres:
     image: postgres:15
@@ -106,7 +107,7 @@ services:
     volumes:
       - keycloak_db:/var/lib/postgresql/data
     networks:
-      - backend
+      - backend-net
 
   # ============================
   # API GATEWAY
@@ -127,7 +128,7 @@ services:
       config-server:
         condition: service_started
     networks:
-      - backend
+      - backend-net
 
 # ============================
 # VOLUMENES
@@ -142,5 +143,7 @@ volumes:
 # RED
 # ============================
 networks:
-  backend:
+  backend-net:
     driver: bridge
+  docker_platform-net:
+    external: true
