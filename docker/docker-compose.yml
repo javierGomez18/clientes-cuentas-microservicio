@@ -10,11 +10,11 @@ services:
       context: ..
       dockerfile: ./docker/Dockerfile.config
     environment:
-      SPRING_PROFILES_ACTIVE: docker
+      SPRING_PROFILES_ACTIVE: dev
     ports:
       - "8888:8888"
     networks:
-      - backend
+      - backend-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8888/actuator/health" ]
       interval: 5s
@@ -32,7 +32,7 @@ services:
     ports:
       - "8761:8761"
     networks:
-      - backend
+      - backend-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8761/actuator/health" ]
       interval: 5s
@@ -59,7 +59,8 @@ services:
       config-server:
         condition: service_healthy
     networks:
-      - backend
+      - backend-net
+      - docker_platform-net
 
   # ============================
   # KEYCLOAK + POSTGRES
@@ -83,7 +84,7 @@ services:
       KC_PROXY: edge
 
     ports:
-      - "8081:8080"
+      - "8082:8082"
 
     depends_on:
       - keycloak-postgres
@@ -94,7 +95,7 @@ services:
       - keycloak_providers:/opt/keycloak/providers
 
     networks:
-      - backend
+      - backend-net
 
   keycloak-postgres:
     image: postgres:15
@@ -106,26 +107,28 @@ services:
     volumes:
       - keycloak_db:/var/lib/postgresql/data
     networks:
-      - backend
+      - backend-net
 
   # ============================
   # API GATEWAY
   # ============================
-#  gateway:
-#    image: javier/api-gateway:latest
-#    container_name: api-gateway
-#    build:
-#      context: ./gateway
-#    environment:
-#      SPRING_PROFILES_ACTIVE: docker
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - eureka-server
-#      - config-server
-#      - keycloak
-#    networks:
-#      - backend
+  gateway-ms:
+    container_name: gateway-server
+    build:
+      context: ../
+      dockerfile: ./docker/Dockerfile.gateway
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-server:8761/eureka
+    ports:
+      - "8081:8081"
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+      config-server:
+        condition: service_started
+    networks:
+      - backend-net
 
 # ============================
 # VOLUMENES
@@ -140,5 +143,7 @@ volumes:
 # RED
 # ============================
 networks:
-  backend:
+  backend-net:
     driver: bridge
+  docker_platform-net:
+    external: true

@@ -13,3 +13,4 @@ security:
   allowed-clients:
     - clientes-cuentas-microservicio
     - retail-microservicio
+    - audit-service
