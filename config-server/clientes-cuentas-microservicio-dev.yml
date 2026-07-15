@@ -57,3 +57,8 @@ resilience4j:
       clientes-cuentas-microservicio:
         maxConcurrentCalls: 10
         maxWaitDuration: 0
+client:
+  feign:
+    audit:
+      service:
+        url: http://localhost:8085
