@@ -61,4 +61,4 @@ client:
   feign:
     audit:
       service:
-        url: http://localhost:8085/api/v1
+        url: http://audit-service:8085/api/v1
