@@ -1,5 +1,10 @@
 package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.rest.controller;
 
+import com.javier.infrastructure.auditclient.dto.AuditAction;
+import com.javier.infrastructure.auditclient.dto.AuditEntity;
+import com.javier.infrastructure.auditclient.dto.AuditMicroservice;
+import com.javier.infrastructure.auditclient.feign.AuditFeignClient;
+import com.javier.infrastructure.auditclient.mapper.AuditMapper;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +12,7 @@ import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.FindCuent
 import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.ClienteResponseMapper;
 import org.javierGomez18.clientes.cuentas.microservicio.web.api.ClientesApi;
 import org.javierGomez18.clientes.cuentas.microservicio.web.dto.ClienteRS;
+import org.slf4j.MDC;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,12 +23,22 @@ public class ClienteController implements ClientesApi {
 
   private final FindCuentaUseCase findCuentaUseCase;
   private final ClienteResponseMapper clienteResponseMapper;
+  private final AuditMapper auditMapper;
+  private final AuditFeignClient auditFeignClient;
 
   @Override
   public ResponseEntity<List<ClienteRS>> findAllClientes() {
     log.info("GET /clientes");
     var clientes = findCuentaUseCase.findAllClientes();
     var responses = clienteResponseMapper.toResponseList(clientes);
+    auditFeignClient.createAuditEvent(
+        auditMapper.toAuditEventRQ(
+            null,
+            AuditMicroservice.CLIENTES_CUENTAS.name(),
+            AuditAction.GET.name(),
+            AuditEntity.CLIENTE.name(),
+            null,
+            MDC.get("correlationId")));
     return ResponseEntity.ok(responses);
   }
 
@@ -31,6 +47,14 @@ public class ClienteController implements ClientesApi {
     log.info("GET /clientes/{}", dni);
     var cliente = findCuentaUseCase.findClienteByDni(dni);
     var response = clienteResponseMapper.toResponse(cliente);
+    auditFeignClient.createAuditEvent(
+        auditMapper.toAuditEventRQ(
+            dni,
+            AuditMicroservice.CLIENTES_CUENTAS.name(),
+            AuditAction.GET.name(),
+            AuditEntity.CLIENTE.name(),
+            null,
+            MDC.get("correlationId")));
     return ResponseEntity.ok(response);
   }
 
@@ -39,6 +63,14 @@ public class ClienteController implements ClientesApi {
     log.info("GET /adultos");
     var clientes = findCuentaUseCase.findClientesAdultos();
     var responses = clienteResponseMapper.toResponseList(clientes);
+    auditFeignClient.createAuditEvent(
+        auditMapper.toAuditEventRQ(
+            null,
+            AuditMicroservice.CLIENTES_CUENTAS.name(),
+            AuditAction.GET.name(),
+            AuditEntity.CLIENTE.name(),
+            null,
+            MDC.get("correlationId")));
     return ResponseEntity.ok(responses);
   }
 
@@ -47,6 +79,14 @@ public class ClienteController implements ClientesApi {
     log.info("GET /total/{}", cantidad);
     var clientes = findCuentaUseCase.findClientesByTotalGreaterThan(cantidad);
     var responses = clienteResponseMapper.toResponseList(clientes);
+    auditFeignClient.createAuditEvent(
+        auditMapper.toAuditEventRQ(
+            cantidad,
+            AuditMicroservice.CLIENTES_CUENTAS.name(),
+            AuditAction.GET.name(),
+            AuditEntity.CLIENTE.name(),
+            null,
+            MDC.get("correlationId")));
     return ResponseEntity.ok(responses);
   }
 }

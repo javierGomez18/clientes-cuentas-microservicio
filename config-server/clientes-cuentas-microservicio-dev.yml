@@ -25,6 +25,10 @@ spring:
     open-in-view: false
   security:
     oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: clientes-cuentas-microservicio
       resourceserver:
         jwt:
           issuer-uri: http://keycloak:8080/realms/empresa-realm
