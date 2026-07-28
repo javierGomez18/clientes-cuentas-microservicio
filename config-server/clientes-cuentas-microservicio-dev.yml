@@ -8,7 +8,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 spring:
   datasource:
-    url: jdbc:postgresql://postgres:5432/clientes-cuentas
+    url: jdbc:postgresql://postgres:5432/clientes_cuentas
     username: admin
     password: admin
     driver-class-name: org.postgresql.Driver
