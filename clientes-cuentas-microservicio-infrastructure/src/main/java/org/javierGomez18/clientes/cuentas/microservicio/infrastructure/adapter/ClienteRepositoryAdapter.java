@@ -11,14 +11,12 @@ import org.javierGomez18.clientes.cuentas.microservicio.domain.port.out.Clientes
 import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.ClienteEntityMapper;
 import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.persistence.repository.ClienteJpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
-/**
- * Adaptador: Implementa ClientesQueryRepository (Puerto OUT) Convierte llamadas del dominio a
- * queries JPA
- */
 @Slf4j
 @Repository
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ClienteRepositoryAdapter implements ClientesQueryRepository {
 
   private final ClienteJpaRepository clienteJpaRepository;

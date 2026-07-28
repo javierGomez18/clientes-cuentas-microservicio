@@ -19,6 +19,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <springdoc-openapi-starter-webmvc-ui.version>2.2.0</springdoc-openapi-starter-webmvc-ui.version>
         <mapstruct.version>1.6.3</mapstruct.version>
+        <postgresql.version>42.7.3</postgresql.version>
+        <audit.client.version>1.0.0-SNAPSHOT</audit.client.version>
+        <maven.dependency.plugin.version>3.6.0</maven.dependency.plugin.version>
+        <feign.version>13.2.1</feign.version>
     </properties>
 
     <dependencies>
@@ -48,9 +52,9 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -80,23 +84,23 @@
         <dependency>
             <groupId>jakarta.validation</groupId>
             <artifactId>jakarta.validation-api</artifactId>
-            <version>3.1.1</version>
+            <version>${jakarta.validation.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.annotation</groupId>
             <artifactId>jakarta.annotation-api</artifactId>
-            <version>2.1.1</version>
+            <version>${jakarta.annotation.version}</version>
         </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.1.0</version>
+            <version>${jakarta.servlet.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.openapitools</groupId>
             <artifactId>jackson-databind-nullable</artifactId>
-            <version>0.2.4</version>
+            <version>${jackson.databind.nullable.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -124,6 +128,16 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-okhttp</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-jackson</artifactId>
+            <version>${feign.version}</version>
+        </dependency>
+        <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
@@ -131,22 +145,56 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.javier.infrastructure</groupId>
+            <artifactId>audit-client</artifactId>
+            <version>${audit.client.version}</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>${maven.dependency.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>copy-audit-contract</id>
+                        <phase>initialize</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>com.javier.infrastructure</groupId>
+                                    <artifactId>audit-client</artifactId>
+                                    <version>${audit.client.version}</version>
+                                    <type>jar</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+                                    <includes>openapi/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.openapitools</groupId>
                 <artifactId>openapi-generator-maven-plugin</artifactId>
                 <version>${openapi-generator-maven-plugin.version}</version>
                 <executions>
                     <execution>
-                        <id>generate-sources</id>
+                        <id>generate-clientes-cuentas-api</id>
+                        <phase>generate-sources</phase>
                         <goals>
                             <goal>generate</goal>
                         </goals>
                         <configuration>
                             <inputSpec>${project.basedir}/src/main/resources/swagger.yml</inputSpec>
-                            <output>${project.build.directory}/generated-sources/openapi</output>
+                            <output>${project.build.directory}/generated-sources/openapi/clientescuentas</output>
                             <generatorName>spring</generatorName>
                             <apiPackage>org.javierGomez18.clientes.cuentas.microservicio.web.api</apiPackage>
                             <modelPackage>org.javierGomez18.clientes.cuentas.microservicio.web.dto</modelPackage>
@@ -154,6 +202,26 @@
                                 <interfaceOnly>true</interfaceOnly>
                                 <useLombokAnnotations>true</useLombokAnnotations>
                                 <java11>true</java11>
+                                <useJakartaEe>true</useJakartaEe>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>generate-audit-api</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>${project.build.directory}/dependency/openapi/audit-contract.yml</inputSpec>
+                            <output>${project.build.directory}/generated-sources/openapi/audit</output>
+                            <generatorName>java</generatorName>
+                            <library>feign</library>
+                            <apiPackage>org.javierGomez18.clientes.cuentas.microservicio.feign.auditclient.api</apiPackage>
+                            <modelPackage>org.javierGomez18.clientes.cuentas.microservicio.feign.auditclient.model</modelPackage>
+                            <configOptions>
+                                <useLombokAnnotations>true</useLombokAnnotations>
+                                <java21>true</java21>
                                 <useJakartaEe>true</useJakartaEe>
                             </configOptions>
                         </configuration>
