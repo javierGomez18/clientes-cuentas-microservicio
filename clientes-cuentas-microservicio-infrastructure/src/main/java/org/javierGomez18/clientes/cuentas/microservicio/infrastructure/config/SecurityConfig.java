@@ -14,29 +14,31 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("admin")
-                .password("{noop}admin123") // {noop} = sin encriptar
-                .roles("USER")
-                .build();
+  @Bean
+  public UserDetailsService userDetailsService() {
+    UserDetails user =
+        User.withUsername("admin")
+            .password("{noop}admin123") // {noop} = sin encriptar
+            .roles("USER")
+            .build();
 
-        return new InMemoryUserDetailsManager(user);
-    }
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    return new InMemoryUserDetailsManager(user);
+  }
 
-        http
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/clientes-cuentas/actuator/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(basic -> {
-                });
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        return http.build();
-    }
+    http.csrf(csrf -> csrf.disable())
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/api/v1/clientes-cuentas/actuator/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .httpBasic(basic -> {});
+
+    return http.build();
+  }
 }
-
