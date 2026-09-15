@@ -31,7 +31,7 @@ spring:
             client-id: clientes-cuentas-microservicio
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/empresa-realm
+          issuer-uri: http://keycloak:8082/realms/microservices-realm
     user:
       name: admin
       password: admin123
