@@ -1,6 +1,5 @@
 package org.javierGomez18.clientes.cuentas.microservicio.infrastructure.rest.controller;
 
-
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

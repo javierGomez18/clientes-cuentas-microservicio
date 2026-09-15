@@ -1,8 +1,15 @@
 server:
   port: 8081
 spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8082/realms/microservices-realm
   cloud:
     gateway:
+      default-filters:
+        - TokenRelay
       discovery:
         locator:
           enabled: true
@@ -26,6 +33,12 @@ spring:
             - Path=/api/movimientos/**
           filters:
             - RewritePath=/api/(?<segment>.*), /api/v1/clientes-cuentas/${segment}
+        - id: audit-service
+          uri: lb://audit-service
+          predicates:
+            - Path=/api/audit/**
+          filters:
+            - RewritePath=/api/(?<segment>.*), /api/v1/audit/${segment}
 eureka:
   client:
     service-url:
