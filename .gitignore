@@ -4,8 +4,6 @@
 target/classes/
 *.class
 *.jar
-*.yml
-*.yaml
 
 # IntelliJ IDEA
 .idea/
