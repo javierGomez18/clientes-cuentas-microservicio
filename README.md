@@ -1,5 +1,7 @@
 # clientes-cuentas-microservicio
 
+> 📌 **¿Retomas el proyecto? Empieza por [`docs/README.md`](docs/README.md)**: estado real, evolutivos a medias y próximos pasos. Este README puede estar desfasado (por ejemplo, el context-path actual es `/api/v1/clientes-cuentas`).
+
 Microservicio para la gestión de clientes y cuentas bancarias desarrollado en **Java 21** con **Spring Boot 3.3.1**.  
 La persistencia se realiza sobre una base de datos **H2 en memoria**, con mapeo de entidades mediante **MapStruct**  
 y generación automática de controladores y DTOs a partir de un contrato **OpenAPI** mediante el plugin  
