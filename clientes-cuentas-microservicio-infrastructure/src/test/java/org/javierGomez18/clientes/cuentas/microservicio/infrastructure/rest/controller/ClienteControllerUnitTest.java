@@ -8,6 +8,8 @@ import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Cliente;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.FindCuentaUseCase;
 import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.ClienteResponseMapper;
 import org.javierGomez18.clientes.cuentas.microservicio.web.dto.ClienteRS;
+import org.javierGomez18.infrastructure.auditclient.feign.AuditFeignClient;
+import org.javierGomez18.infrastructure.auditclient.mapper.AuditMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,6 +23,10 @@ class ClienteControllerUnitTest {
   @Mock FindCuentaUseCase findCuentaUseCase;
 
   @Mock ClienteResponseMapper clienteResponseMapper;
+
+  @Mock AuditMapper auditMapper;
+
+  @Mock AuditFeignClient auditFeignClient;
 
   @InjectMocks ClienteController controller;
 

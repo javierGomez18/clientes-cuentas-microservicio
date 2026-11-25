@@ -399,6 +399,66 @@ paths:
             application/problem+json:
               schema:
                 $ref: '#/components/schemas/ProblemDetailRS'
+  /cuentas/{idCuenta}/estado:
+    patch:
+      tags:
+        - Cuentas
+      summary: Actualizar estado cuenta
+      description: Actualiza el estado de una cuenta dada
+      operationId: actualizarEstadoCuenta
+      parameters:
+        - name: idCuenta
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+          description: Identificador Cuenta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CuentaUpdateEstadoRQ'
+      responses:
+        '200':
+          description: 'Estado de la cuenta actualizado correctamente'
+        '400':
+          description: 'Bad Request'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '404':
+          description: 'Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '409':
+          description: 'Conflict'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '422':
+          description: 'Unprocessable Entity'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        '500':
+          description: 'ERROR PATCH Cuentas: Internal Server ERROR'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
+        default:
+          description: 'Error inesperado'
+          content:
+            application/problem+json:
+              schema:
+                $ref: '#/components/schemas/ProblemDetailRS'
   /movimientos/{idCuenta}:
     get:
       tags:
@@ -441,12 +501,7 @@ paths:
           in: query
           required: false
           schema:
-            type: string
-            enum:
-              - INGRESO
-              - RETIRADA
-              - TRANSFERENCIA
-          description: "Filtro opcional por tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)"
+            $ref: '#/components/schemas/TipoMovimientoEnum'
       responses:
         '200':
           description: Lista de movimientos de la cuenta
@@ -571,59 +626,56 @@ components:
           type: number
           format: double
           description: Saldo de la cuenta
+        estado:
+          $ref: '#/components/schemas/EstadoEnum'
     MovimientoPageRS:
-        type: object
-        required:
-            - content
-            - page
-            - size
-            - totalElements
-            - totalPages
-        properties:
-            content:
-              type: array
-              items:
-                  $ref: '#/components/schemas/MovimientoRS'
-            page:
-              type: integer
-              format: int32
-              description: Número de página actual (0-indexada)
-            size:
-              type: integer
-              format: int32
-              description: Tamaño de página solicitado
-            totalElements:
-              type: integer
-              format: int64
-              description: Número total de elementos disponibles
-            totalPages:
-              type: integer
-              format: int32
-              description: Número total de páginas disponibles
+      type: object
+      required:
+          - content
+          - page
+          - size
+          - totalElements
+          - totalPages
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/MovimientoRS'
+        page:
+          type: integer
+          format: int32
+          description: Número de página actual (0-indexada)
+        size:
+          type: integer
+          format: int32
+          description: Tamaño de página solicitado
+        totalElements:
+          type: integer
+          format: int64
+          description: Número total de elementos disponibles
+        totalPages:
+          type: integer
+          format: int32
+          description: Número total de páginas disponibles
     MovimientoRQ:
-        type: object
-        required:
-            - tipoMovimiento
-            - importe
-        properties:
-            tipoMovimiento:
-              type: string
-              enum:
-                  - INGRESO
-                  - RETIRADA
-                  - TRANSFERENCIA
-              description: Tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)
-            importe:
-              type: number
-              format: double
-              description: Cantidad del movimiento
-            idCuentaDestino:
-              type: integer
-              format: int64
-              description: "Identificador Cuenta Destino (solo requerido para TRANSFERENCIA, opcional para INGRESO y RETIRADA)"
-            descripcion:
-              type: string
-              description: Descripción del movimiento (opcional)
+      type: object
+      required:
+        - tipoMovimiento
+        - importe
+      properties:
+        tipoMovimiento:
+          $ref: '#/components/schemas/TipoMovimientoEnum'
+        importe:
+          type: number
+          format: double
+          description: Cantidad del movimiento
+        idCuentaDestino:
+          type: integer
+          format: int64
+          description: "Identificador Cuenta Destino (solo requerido para TRANSFERENCIA, opcional para INGRESO y RETIRADA)"
+        descripcion:
+          type: string
+          description: Descripción del movimiento (opcional)
     MovimientoRS:
       type: object
       required:
@@ -644,12 +696,7 @@ components:
           format: date-time
           description: Fecha y hora del movimiento (YYYY-MM-DDTHH:mm:ss)
         tipoMovimiento:
-          type: string
-          enum:
-            - INGRESO
-            - RETIRADA
-            - TRANSFERENCIA
-          description: Tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)
+          $ref: '#/components/schemas/TipoMovimientoEnum'
         importe:
           type: number
           format: double
@@ -657,6 +704,30 @@ components:
         descripcion:
           type: string
           description: Descripción del movimiento (opcional)
+    TipoMovimientoEnum:
+      type: string
+      enum:
+        - INGRESO
+        - RETIRADA
+        - TRANSFERENCIA
+      description: Tipo de movimiento (INGRESO, RETIRADA o TRANSFERENCIA)
+    CuentaUpdateEstadoRQ:
+      type: object
+      required:
+          - estado
+      properties:
+        estado:
+          $ref: '#/components/schemas/EstadoEnum'
+        motivo:
+          type: string
+          description: Motivo del cambio de estado (opcional)
+    EstadoEnum:
+      type: string
+      enum:
+        - ACTIVA
+        - BLOQUEADA
+        - CERRADA
+      description: Estado de la cuenta (ACTIVA, BLOQUEADA o CERRADA)
     ProblemDetailRS:
         type: object
         required:
@@ -665,7 +736,6 @@ components:
             - status
             - detail
             - instance
-            - exceptionType
             - timestamp
         properties:
             type:

@@ -7,10 +7,7 @@ import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Movimiento;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.*;
 import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.MovimientoResponseMapper;
 import org.javierGomez18.clientes.cuentas.microservicio.web.api.CuentasApi;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.CuentaRQ;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.CuentaUpdateRQ;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.MovimientoRQ;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.MovimientoRS;
+import org.javierGomez18.clientes.cuentas.microservicio.web.dto.*;
 import org.javierGomez18.infrastructure.auditclient.dto.AuditAction;
 import org.javierGomez18.infrastructure.auditclient.dto.AuditEntity;
 import org.javierGomez18.infrastructure.auditclient.dto.AuditMicroservice;
@@ -97,5 +94,10 @@ public class CuentasBancariasController implements CuentasApi {
             idCuenta,
             MDC.get("correlationId")));
     return ResponseEntity.ok(movimientoResponseMapper.toResponse(movimiento));
+  }
+
+  @Override
+  public ResponseEntity<Void> actualizarEstadoCuenta(Long idCuenta, CuentaUpdateEstadoRQ cuentaUpdateEstadoRQ) {
+    return CuentasApi.super.actualizarEstadoCuenta(idCuenta, cuentaUpdateEstadoRQ);
   }
 }

@@ -8,10 +8,9 @@ import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.CreateCue
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.CreateMovimientoUseCase;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.port.in.UpdateCuentaUseCase;
 import org.javierGomez18.clientes.cuentas.microservicio.infrastructure.mapper.MovimientoResponseMapper;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.CuentaRQ;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.CuentaUpdateRQ;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.MovimientoRQ;
-import org.javierGomez18.clientes.cuentas.microservicio.web.dto.MovimientoRS;
+import org.javierGomez18.clientes.cuentas.microservicio.web.dto.*;
+import org.javierGomez18.infrastructure.auditclient.feign.AuditFeignClient;
+import org.javierGomez18.infrastructure.auditclient.mapper.AuditMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +28,10 @@ class CuentasBancariasControllerUnitTest {
   @Mock CreateMovimientoUseCase createMovimientoUseCase;
 
   @Mock MovimientoResponseMapper movimientoResponseMapper;
+
+  @Mock AuditMapper auditMapper;
+
+  @Mock AuditFeignClient auditFeignClient;
 
   @InjectMocks CuentasBancariasController controller;
 
@@ -70,14 +73,7 @@ class CuentasBancariasControllerUnitTest {
     when(rq.getIdCuentaDestino()).thenReturn(null);
     when(rq.getTipoMovimiento())
         .thenReturn(
-            org.javierGomez18
-                .clientes
-                .cuentas
-                .microservicio
-                .web
-                .dto
-                .MovimientoRQ
-                .TipoMovimientoEnum
+            TipoMovimientoEnum
                 .RETIRADA);
     when(rq.getImporte()).thenReturn(50.0);
     when(rq.getDescripcion()).thenReturn("desc");

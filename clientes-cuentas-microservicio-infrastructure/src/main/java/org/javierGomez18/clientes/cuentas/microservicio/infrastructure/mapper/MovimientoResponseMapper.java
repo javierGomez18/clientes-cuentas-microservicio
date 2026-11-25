@@ -7,10 +7,10 @@ import java.util.List;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.Movimiento;
 import org.javierGomez18.clientes.cuentas.microservicio.domain.model.TipoMovimiento;
 import org.javierGomez18.clientes.cuentas.microservicio.web.dto.MovimientoRS;
+import org.javierGomez18.clientes.cuentas.microservicio.web.dto.TipoMovimientoEnum;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-/** Mapper: Movimiento (Domain) -> MovimientoResponse (DTO) */
 @Mapper(componentModel = "spring")
 public interface MovimientoResponseMapper {
 
@@ -23,13 +23,13 @@ public interface MovimientoResponseMapper {
     return date != null ? date.atStartOfDay().atOffset(ZoneOffset.UTC) : null;
   }
 
-  default MovimientoRS.TipoMovimientoEnum map(TipoMovimiento value) {
+  default TipoMovimientoEnum map(TipoMovimiento value) {
     if (value == null) return null;
 
     return switch (value) {
-      case INGRESO -> MovimientoRS.TipoMovimientoEnum.INGRESO;
-      case RETIRADA -> MovimientoRS.TipoMovimientoEnum.RETIRADA;
-      default -> null;
+      case INGRESO -> TipoMovimientoEnum.INGRESO;
+      case RETIRADA -> TipoMovimientoEnum.RETIRADA;
+      case TRANSFERENCIA -> TipoMovimientoEnum.TRANSFERENCIA;
     };
   }
 }
